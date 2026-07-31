@@ -7,7 +7,7 @@
 <!-- Open Graph 标签（微信/QQ 分享卡片） -->
 <meta property="og:title" id="ogTitle" content="美食记探店分享">
 <meta property="og:description" id="ogDesc" content="来自美食记的美食记录">
-<meta property="og:image" id="ogImage" content="">
+<meta property="og:image" id="ogImage" content="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop">
 <meta property="og:type" content="article">
 
 <title>美食记 - 探店分享</title>
@@ -97,7 +97,13 @@ body {
     }
 
     try {
-        var json = atob(encoded.replace(/-/g, '+').replace(/_/g, '/'));
+        // base64 URL-safe → 标准 base64
+        var std = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        // 解码并正确处理 UTF-8
+        var binary = atob(std);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) { bytes[i] = binary.charCodeAt(i); }
+        var json = new TextDecoder('utf-8').decode(bytes);
         var d = JSON.parse(json);
     } catch(e) {
         appDiv.innerHTML = '<div style="text-align:center;padding:80px 20px;">🍜<p style="color:#888;">分享数据解析失败</p></div>';
