@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>美食记 - 探店分享</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #F5F5F7; color: #1C1C1E; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+}
+.card {
+    background: #FFF; border-radius: 20px; padding: 24px;
+    margin: 20px; width: calc(100% - 40px); max-width: 420px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.cover {
+    width: 100%; height: 220px; border-radius: 12px;
+    object-fit: cover; background: #eee;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px; color: #ccc;
+}
+.rating { text-align: center; margin: 16px 0 8px; }
+.rating .emoji { font-size: 48px; }
+.rating .label { font-size: 18px; font-weight: 700; color: #FF6B35; }
+.rating .desc { font-size: 13px; color: #888; }
+.shop-name { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.address { display: flex; align-items: center; justify-content: center; gap: 4px;
+    font-size: 14px; color: #888; margin-bottom: 16px; }
+.dishes { margin: 12px 0; }
+.dish-row { display: flex; justify-content: space-between; padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0; font-size: 15px; }
+.dish-row .price { color: #FF6B35; font-weight: 600; }
+.summary { display: flex; justify-content: space-between; padding: 10px 16px;
+    background: #FFF8F3; border-radius: 10px; margin: 12px 0; font-size: 14px; }
+.avg { text-align: center; font-size: 28px; font-weight: 700; color: #FF6B35; margin: 8px 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.tag { background: #FFF3ED; color: #FF6B35; padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 500; }
+.notes { font-size: 14px; color: #666; line-height: 1.8; background: #fafafa;
+    border-radius: 10px; padding: 12px; margin: 10px 0; }
+.bottom-bar {
+    position: sticky; bottom: 0; width: 100%; max-width: 420px;
+    background: #FFF; padding: 12px 20px 24px;
+    border-top: 1px solid #eee;
+}
+.open-btn {
+    width: 100%; padding: 14px; border-radius: 24px;
+    background: linear-gradient(135deg, #FF6B35, #FF8C42);
+    color: #FFF; font-size: 16px; font-weight: 700;
+    border: none; cursor: pointer; text-align: center; display: block;
+    text-decoration: none;
+}
+.footer { text-align: center; padding: 8px; font-size: 12px; color: #aaa; }
+.error { text-align: center; padding: 60px 20px; }
+.error h2 { font-size: 48px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+    <div class="card">
+        <div class="cover">🍜</div>
+        <div class="rating">
+            <div class="emoji"></div>
+            <div class="label"></div>
+            <div class="desc"></div>
+        </div>
+        <div class="shop-name"></div>
+        <div class="address"></div>
+        <div class="dishes"></div>
+        <div class="summary">
+            <span>同行人数</span><span class="people"></span>
+        </div>
+        <div class="avg"></div>
+        <div class="tags"></div>
+        <div class="notes"></div>
+    </div>
+    <div class="bottom-bar">
+        <a class="open-btn" id="openApp" href="#">在「美食记」App 中打开</a>
+    </div>
+    <div class="footer">来自 美食记 · 记录每一口幸福</div>
+</div>
+
+<script>
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    var data = params.get('d');
+    if (!data) {
+        document.getElementById('app').innerHTML = '<div class="error"><h2>🍜</h2><p>这是一条美食记探店分享</p><p style="color:#888;font-size:14px;">请在美食记 App 中查看完整内容</p></div>';
+        return;
+    }
+
+    var parts = decodeURIComponent(data).split('|');
+    var shopName = parts[0] || '';
+    var rating = parts[1] || '';
+    var avg = parts[2] || '';
+    var address = parts[3] || '';
+
+    var ratingMap = {
+        'FIRE': { emoji: '🔥', label: '夯爆了', desc: '此生必吃！愿意为它专程跑一趟' },
+        'CROWN': { emoji: '👑', label: '顶级', desc: '非常好吃，会反复回购' },
+        'SMILE': { emoji: '😊', label: '人上人', desc: '还不错，路过可以吃' },
+        'NPC': { emoji: '😐', label: 'NPC', desc: '平平无奇，吃不吃都行' },
+        'SKULL': { emoji: '💀', label: '拉完了', desc: '踩雷了，快跑！' }
+    };
+
+    var r = ratingMap[rating] || { emoji: '🍜', label: '', desc: '' };
+    document.querySelector('.cover').textContent = r.emoji;
+    document.querySelector('.rating .emoji').textContent = r.emoji;
+    document.querySelector('.rating .label').textContent = r.label;
+    document.querySelector('.rating .desc').textContent = r.desc;
+    document.querySelector('.shop-name').textContent = shopName;
+    document.querySelector('.address').innerHTML = '📍 ' + address;
+    document.querySelector('.avg').textContent = avg + '/人';
+
+    // Deep link 尝试打开 App
+    document.getElementById('openApp').href = 'meishiji://home';
+    document.getElementById('openApp').addEventListener('click', function(e) {
+        var start = Date.now();
+        window.location.href = 'meishiji://home';
+        setTimeout(function() {
+            if (Date.now() - start < 2500) {
+                window.location.href = 'https://meishiji.github.io';
+            }
+        }, 2000);
+        e.preventDefault();
+    });
+})();
+</script>
+</body>
+</html>
