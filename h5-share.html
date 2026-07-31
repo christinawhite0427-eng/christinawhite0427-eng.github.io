@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+<!-- Open Graph 标签（微信/QQ 分享卡片） -->
+<meta property="og:title" id="ogTitle" content="美食记探店分享">
+<meta property="og:description" id="ogDesc" content="来自美食记的美食记录">
+<meta property="og:image" id="ogImage" content="">
+<meta property="og:type" content="article">
+
 <title>美食记 - 探店分享</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,121 +20,183 @@ body {
 }
 .card {
     background: #FFF; border-radius: 20px; padding: 24px;
-    margin: 20px; width: calc(100% - 40px); max-width: 420px;
+    margin: 16px 16px 0; width: calc(100% - 32px); max-width: 460px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .cover {
-    width: 100%; height: 220px; border-radius: 12px;
-    object-fit: cover; background: #eee;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 64px; color: #ccc;
+    width: 100%; max-height: 260px; border-radius: 12px;
+    object-fit: cover; background: #f0f0f0; display: block;
 }
-.rating { text-align: center; margin: 16px 0 8px; }
-.rating .emoji { font-size: 48px; }
+.no-cover {
+    width: 100%; height: 150px; border-radius: 12px;
+    background: linear-gradient(135deg, #FFD040, #FF6B2B);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px; color: #FFF;
+}
+.rating { text-align: center; margin: 14px 0 6px; }
+.rating .emoji { font-size: 44px; }
 .rating .label { font-size: 18px; font-weight: 700; color: #FF6B35; }
 .rating .desc { font-size: 13px; color: #888; }
 .shop-name { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 4px; }
-.address { display: flex; align-items: center; justify-content: center; gap: 4px;
-    font-size: 14px; color: #888; margin-bottom: 16px; }
-.dishes { margin: 12px 0; }
-.dish-row { display: flex; justify-content: space-between; padding: 8px 0;
-    border-bottom: 1px solid #f0f0f0; font-size: 15px; }
-.dish-row .price { color: #FF6B35; font-weight: 600; }
-.summary { display: flex; justify-content: space-between; padding: 10px 16px;
-    background: #FFF8F3; border-radius: 10px; margin: 12px 0; font-size: 14px; }
+.meta { display: flex; justify-content: center; gap: 16px; font-size: 13px; color: #888; margin: 6px 0 14px; }
+.dish-title { font-size: 15px; font-weight: 600; margin: 14px 0 8px; color: #333; }
+.dish-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; gap: 10px; }
+.dish-thumb { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; background: #eef; flex-shrink: 0; }
+.dish-right { display: flex; justify-content: space-between; flex: 1; align-items: center; }
+.dish-right .name { font-size: 15px; }
+.dish-right .amount { font-size: 15px; color: #FF6B35; font-weight: 600; }
+.dish-rating { font-size: 12px; color: #888; }
+.summary { display: flex; justify-content: space-around; padding: 12px 16px;
+    background: #FFF8F3; border-radius: 10px; margin: 12px 0; font-size: 14px; text-align: center; }
+.summary .val { font-size: 22px; font-weight: 700; color: #FF6B35; }
+.summary .lbl { font-size: 11px; color: #888; margin-top: 2px; }
 .avg { text-align: center; font-size: 28px; font-weight: 700; color: #FF6B35; margin: 8px 0; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
 .tag { background: #FFF3ED; color: #FF6B35; padding: 4px 12px; border-radius: 20px;
     font-size: 12px; font-weight: 500; }
 .notes { font-size: 14px; color: #666; line-height: 1.8; background: #fafafa;
     border-radius: 10px; padding: 12px; margin: 10px 0; }
+.notes::before { content: '💬 备注'; display: block; font-size: 12px; color: #aaa; margin-bottom: 6px; }
+.address-full { font-size: 13px; color: #888; margin: 8px 0; display: flex; align-items: center; gap: 4px; }
 .bottom-bar {
-    position: sticky; bottom: 0; width: 100%; max-width: 420px;
+    position: sticky; bottom: 0; width: 100%; max-width: 460px;
     background: #FFF; padding: 12px 20px 24px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #eee; display: flex; gap: 10px;
 }
 .open-btn {
-    width: 100%; padding: 14px; border-radius: 24px;
+    flex: 2; padding: 14px; border-radius: 24px;
     background: linear-gradient(135deg, #FF6B35, #FF8C42);
-    color: #FFF; font-size: 16px; font-weight: 700;
-    border: none; cursor: pointer; text-align: center; display: block;
-    text-decoration: none;
+    color: #FFF; font-size: 15px; font-weight: 700;
+    border: none; cursor: pointer; text-align: center; text-decoration: none;
 }
-.footer { text-align: center; padding: 8px; font-size: 12px; color: #aaa; }
-.error { text-align: center; padding: 60px 20px; }
-.error h2 { font-size: 48px; margin-bottom: 10px; }
+.share-btn {
+    flex: 1; padding: 14px; border-radius: 24px;
+    background: #f0f0f0; color: #333; font-size: 14px;
+    border: none; cursor: pointer; text-align: center;
+}
+.footer { text-align: center; padding: 10px 20px 30px; font-size: 12px; color: #aaa; }
+.photos-row { display: flex; gap: 8px; overflow-x: auto; margin: 10px 0; }
+.photos-row img { width: 100px; height: 100px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.video-badge { background: #E3F2FD; border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; color: #1976D2; font-size: 13px; width: 52px; height: 52px; flex-shrink: 0; }
 </style>
 </head>
 <body>
 
-<div id="app">
-    <div class="card">
-        <div class="cover">🍜</div>
-        <div class="rating">
-            <div class="emoji"></div>
-            <div class="label"></div>
-            <div class="desc"></div>
-        </div>
-        <div class="shop-name"></div>
-        <div class="address"></div>
-        <div class="dishes"></div>
-        <div class="summary">
-            <span>同行人数</span><span class="people"></span>
-        </div>
-        <div class="avg"></div>
-        <div class="tags"></div>
-        <div class="notes"></div>
-    </div>
-    <div class="bottom-bar">
-        <a class="open-btn" id="openApp" href="#">在「美食记」App 中打开</a>
-    </div>
-    <div class="footer">来自 美食记 · 记录每一口幸福</div>
-</div>
+<div id="app"></div>
 
 <script>
 (function() {
     var params = new URLSearchParams(window.location.search);
-    var data = params.get('d');
-    if (!data) {
-        document.getElementById('app').innerHTML = '<div class="error"><h2>🍜</h2><p>这是一条美食记探店分享</p><p style="color:#888;font-size:14px;">请在美食记 App 中查看完整内容</p></div>';
+    var encoded = params.get('data');
+    var appDiv = document.getElementById('app');
+
+    if (!encoded) {
+        appDiv.innerHTML = '<div style="text-align:center;padding:80px 20px;"><h2>🍜</h2><p style="color:#888;margin-top:10px;">这是一条美食记探店分享</p><p style="color:#aaa;font-size:13px;">请在美食记 App 中查看完整内容</p></div>';
         return;
     }
 
-    var parts = decodeURIComponent(data).split('|');
-    var shopName = parts[0] || '';
-    var rating = parts[1] || '';
-    var avg = parts[2] || '';
-    var address = parts[3] || '';
+    try {
+        var json = atob(encoded.replace(/-/g, '+').replace(/_/g, '/'));
+        var d = JSON.parse(json);
+    } catch(e) {
+        appDiv.innerHTML = '<div style="text-align:center;padding:80px 20px;">🍜<p style="color:#888;">分享数据解析失败</p></div>';
+        return;
+    }
 
-    var ratingMap = {
-        'FIRE': { emoji: '🔥', label: '夯爆了', desc: '此生必吃！愿意为它专程跑一趟' },
-        'CROWN': { emoji: '👑', label: '顶级', desc: '非常好吃，会反复回购' },
-        'SMILE': { emoji: '😊', label: '人上人', desc: '还不错，路过可以吃' },
-        'NPC': { emoji: '😐', label: 'NPC', desc: '平平无奇，吃不吃都行' },
-        'SKULL': { emoji: '💀', label: '拉完了', desc: '踩雷了，快跑！' }
-    };
+    // 更新 Open Graph 标签
+    document.getElementById('ogTitle').setAttribute('content', '「' + d.shopName + '」' + d.ratingLabel + ' | 美食记');
+    document.getElementById('ogDesc').setAttribute('content', '人均 ¥' + d.avgPerPerson + ' · ' + (d.province||'') + (d.city||'') + (d.district||''));
+    var firstPhoto = (d.photos && d.photos[0]) || '';
+    document.getElementById('ogImage').setAttribute('content', firstPhoto);
+    document.title = '「' + d.shopName + '」- 美食记';
 
-    var r = ratingMap[rating] || { emoji: '🍜', label: '', desc: '' };
-    document.querySelector('.cover').textContent = r.emoji;
-    document.querySelector('.rating .emoji').textContent = r.emoji;
-    document.querySelector('.rating .label').textContent = r.label;
-    document.querySelector('.rating .desc').textContent = r.desc;
-    document.querySelector('.shop-name').textContent = shopName;
-    document.querySelector('.address').innerHTML = '📍 ' + address;
-    document.querySelector('.avg').textContent = avg + '/人';
+    var photosHtml = '';
+    if (d.photos && d.photos.length > 0) {
+        photosHtml = '<div class="photos-row">' + d.photos.map(function(p) {
+            return '<img src="' + p + '" alt="店铺照片" onerror="this.style.display=\'none\'">';
+        }).join('') + '</div>';
+    }
 
-    // Deep link 尝试打开 App
-    document.getElementById('openApp').href = 'meishiji://home';
-    document.getElementById('openApp').addEventListener('click', function(e) {
+    var dishesHtml = '';
+    if (d.dishes && d.dishes.length > 0) {
+        dishesHtml = '<div class="dish-title">🍽️ 菜品清单</div>' + d.dishes.map(function(dish) {
+            var thumb = '';
+            if (dish.photoUri) {
+                thumb = '<img class="dish-thumb" src="' + dish.photoUri + '" alt="' + dish.name + '" onerror="this.style.display=\'none\'">';
+            } else if (dish.videoUri) {
+                thumb = '<div class="video-badge">🎬</div>';
+            }
+            var r = dish.ratingEmoji ? ' <span class="dish-rating">' + dish.ratingEmoji + '</span>' : '';
+            return '<div class="dish-row">' + thumb +
+                '<div class="dish-right"><span class="name">' + dish.name + r + '</span><span class="amount">¥' + dish.price + '</span></div>' +
+                '</div>';
+        }).join('');
+    }
+
+    var tagsHtml = '';
+    if (d.tags && d.tags.length > 0) {
+        tagsHtml = '<div class="tags">' + d.tags.map(function(t) { return '<span class="tag">#' + t + '</span>'; }).join('') + '</div>';
+    }
+
+    var notesHtml = '';
+    if (d.notes && d.notes.trim()) {
+        notesHtml = '<div class="notes">' + d.notes.replace(/\n/g, '<br>') + '</div>';
+    }
+
+    var addressFull = [d.province||'', d.city||'', d.district||'', d.detailAddress||''].filter(Boolean).join(' ');
+    var addressHtml = addressFull ? '<div class="address-full">📍 ' + addressFull + '</div>' : '';
+
+    var coverHtml = firstPhoto
+        ? '<img class="cover" src="' + firstPhoto + '" alt="封面" onerror="this.style.display=\'none\'">'
+        : '<div class="no-cover">🍜</div>';
+
+    var summaryHtml = '<div class="summary">' +
+        '<div><div class="val">' + (d.peopleCount||1) + '</div><div class="lbl">同行人数</div></div>' +
+        '<div><div class="val">¥' + (d.totalAmount||0) + '</div><div class="lbl">总金额</div></div>' +
+        '<div><div class="val">¥' + (d.avgPerPerson||0) + '</div><div class="lbl">人均</div></div>' +
+        '</div>';
+
+    var metaHtml = '<div class="meta"><span>📅 ' + (d.createdAt||'') + '</span>' + addressFull + '</div>';
+
+    appDiv.innerHTML =
+        '<div class="card">' +
+        coverHtml +
+        '<div class="rating"><div class="emoji">' + (d.ratingEmoji||'🍜') + '</div>' +
+        '<div class="label">' + (d.ratingLabel||'') + '</div>' +
+        '<div class="desc">' + (d.ratingDesc||'') + '</div></div>' +
+        '<div class="shop-name">' + d.shopName + '</div>' +
+        metaHtml +
+        photosHtml +
+        dishesHtml +
+        summaryHtml +
+        tagsHtml +
+        addressHtml +
+        notesHtml +
+        '</div>' +
+        '<div class="bottom-bar">' +
+        '<a class="open-btn" href="meishiji://home" onclick="openApp(event)">📱 在 App 中打开</a>' +
+        '<button class="share-btn" onclick="copyLink()">🔗 复制</button>' +
+        '</div>' +
+        '<div class="footer">来自 美食记 · 记录每一口幸福</div>';
+
+    // Deep link
+    window.openApp = function(e) {
         var start = Date.now();
         window.location.href = 'meishiji://home';
         setTimeout(function() {
             if (Date.now() - start < 2500) {
-                window.location.href = 'https://meishiji.github.io';
+                window.location.href = location.href;
             }
         }, 2000);
         e.preventDefault();
-    });
+    };
+
+    window.copyLink = function() {
+        navigator.clipboard.writeText(location.href).then(function() {
+            alert('链接已复制！');
+        });
+    };
 })();
 </script>
 </body>
